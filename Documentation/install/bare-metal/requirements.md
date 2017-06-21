@@ -1,6 +1,6 @@
 # Bare-Metal: Installation requirements
 
-The Tectonic Installer creates bare-metal Tectonic clusters within networks with PXE infrastructure and the `matchbox` service.
+The Tectonic Installer creates bare-metal Tectonic clusters within networks using PXE infrastructure and the `matchbox` service.
 
 For more information about `matchbox`, reference the [`matchbox` documentation][matchbox].
 
@@ -23,13 +23,11 @@ Familiarize yourself with PXE booting. Cluster nodes should PXE boot from the ne
 
 ### DNS
 
-The installer will prompt for "Controller" and "Tectonic" DNS names. For the controller DNS name, add a record which resolves to the node you plan to use as a controller.
+It is highly recommended to assign DNS names to each node. Three records in particular are required for the installer:
 
-By default, Tectonic Ingress runs as a [Kubernetes Daemon Set][daemonset] across workers. For the Tectonic DNS name, add a record which resolves to any node(s) you plan to use as workers.
-
-* Add a DNS name which resolves to the provisioner (e.g. `matchbox.example.com`)
-* Add a DNS name which resolves to any controller node (e.g. `k8s.example.com`)
-* Add a DNS name which resolves to any worker nodes (e.g. `tectonic.example.com`)
+* A DNS name which resolves to the provisioner (e.g. `matchbox.example.com`)
+* A DNS name which resolves to any controller node (e.g. `k8s.example.com`)
+* A DNS name which resolves to any worker nodes (e.g. `tectonic.example.com`)
 
 ### Machines
 
@@ -39,7 +37,7 @@ By default, Tectonic Ingress runs as a [Kubernetes Daemon Set][daemonset] across
 
 ### Egress whitelist
 
-Cluster nodes will need to be able to pull docker images from [quay.io][quay.io] and gcr.io. Be sure to whitelist these domains.
+Cluster nodes will need to be able to pull docker images from [quay.io][quay.io] and gcr.io. Be sure to whitelist these domains. If you need to whitelist by IP, run `dig quay.io` to list associated IP addresses. 
 
 ## Machines
 
@@ -52,13 +50,15 @@ Tectonic clusters consist of two types of nodes:
 * Controller Nodes - Controller nodes run `etcd` and the control plane of the cluster.
 * Worker Nodes - Worker nodes run your applications. New worker nodes will join the cluster by talking to controller nodes for admission.
 
-Each node should meet the following tech-specs.
+Each node should meet the following suggested requirements:
 
 | Requirement | Value                        |
 |-------------|------------------------------|
 | RAM         | 8GB / node                   |
 | CPU         | 2 cores / node               |
 | Storage     | 30GB / node                  |
+
+Note: More storage may be needed depending on the number of images deployed. 
 
 #### Boot from disk
 
